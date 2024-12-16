@@ -70,11 +70,8 @@ def test_annotate_genes(blast_handler, sample_alignments):
 
 def test_align_sequences(blast_handler):
     """Test BLAST alignment with sample data."""
-    query_file = "data/raw/markers/trait_markers.fasta"
-    subject_file = "data/raw/markers/trait_markers.fasta"
-
-    if not os.path.exists(query_file) or not os.path.exists(subject_file):
-        pytest.skip("Sample FASTA files not available")
+    query_file = "tests/data/markers/test_markers.fasta"
+    subject_file = "tests/data/markers/test_markers.fasta"
 
     alignments = list(blast_handler.align_sequences(query_file, subject_file))
     assert len(alignments) > 0

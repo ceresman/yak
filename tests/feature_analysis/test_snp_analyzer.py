@@ -43,7 +43,8 @@ def test_evaluate_trait_snps(sample_data):
     assert isinstance(stats, pd.DataFrame)
     assert len(stats) == len(genotypes.columns)
     assert all(col in stats.columns for col in [
-        'snp', 'chi2_statistic', 'p_value', 'odds_ratio', 'allele_freqs'
+        'snp', 'chi2_statistic', 'chi2_p_value', 'fisher_p_value',
+        'odds_ratio', 'allele_freqs'
     ])
     assert all(isinstance(freq, dict) for freq in stats['allele_freqs'])
 
@@ -56,7 +57,7 @@ def test_identify_significant_snps(sample_data):
     snps = analyzer.identify_significant_snps(p_threshold=0.1)
     assert isinstance(snps, list)
     assert all(isinstance(snp, dict) for snp in snps)
-    assert all(snp['p_value'] < 0.1 for snp in snps)
+    assert all(snp['chi2_p_value'] < 0.1 for snp in snps)
 
 def test_generate_snp_report(sample_data):
     """Test SNP report generation."""
