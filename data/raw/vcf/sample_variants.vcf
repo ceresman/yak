@@ -1,0 +1,13 @@
+##fileformat=VCFv4.2
+##source=SimulatedYakVariants
+##reference=GCA_005887515.3
+##INFO=<ID=Gene,Number=1,Type=String,Description="Associated gene name">
+##INFO=<ID=Trait,Number=1,Type=String,Description="Associated trait">
+##FORMAT=<ID=GT,Number=1,Type=String,Description="Genotype">
+##FORMAT=<ID=GQ,Number=1,Type=Integer,Description="Genotype Quality">
+#CHROM	POS	ID	REF	ALT	QUAL	FILTER	INFO	FORMAT	YAK001	YAK002	YAK003
+1	1000	rs123456	A	G	100	PASS	Gene=LALBA;Trait=MilkProduction	GT:GQ	0/1:99	1/1:99	0/0:99
+1	2000	rs123457	C	T	95	PASS	Gene=CSN2;Trait=MilkProtein	GT:GQ	1/1:95	0/1:95	0/1:95
+2	1500	rs123458	G	A	98	PASS	Gene=TLR4;Trait=DiseaseResistance	GT:GQ	0/1:98	0/1:98	1/1:98
+2	2500	rs123459	T	C	97	PASS	Gene=MSTN;Trait=BodySize	GT:GQ	1/1:97	0/1:97	0/1:97
+3	1000	rs123460	C	G	96	PASS	Gene=LEP;Trait=Adaptation	GT:GQ	0/1:96	1/1:96	0/0:96
