@@ -108,18 +108,35 @@ def test_annotate_genes(blast_handler, sample_alignments):
                                       'mean_similarity', 'std_similarity'])
 
 @patch('Bio.Blast.Applications.NcbiblastnCommandline')
-def test_align_sequences(mock_blast, blast_handler, mock_blast_xml, tmp_path):
+@patch('Bio.SearchIO.parse')
+def test_align_sequences(mock_parse, mock_blast, blast_handler, mock_blast_xml, tmp_path):
     """Test BLAST alignment with mocked BLAST command."""
     # Mock BLAST command execution
     mock_cmd = MagicMock()
     mock_cmd.return_value = ('', '')
     mock_blast.return_value = mock_cmd
 
-    # Create test files
+    # Create test files with content
     query_file = tmp_path / "query.fasta"
     subject_file = tmp_path / "subject.fasta"
-    query_file.touch()
-    subject_file.touch()
+
+    query_content = ">seq1\nATCGATCGAT\n>seq2\nGCTAGCTAGC\n"
+    subject_content = ">ref1\nATCGATCGAT\n>ref2\nGCTAGCTAGC\n"
+
+    query_file.write_text(query_content)
+    subject_file.write_text(subject_content)
+
+    # Mock SearchIO.parse to return alignment results
+    mock_alignment = MagicMock()
+    mock_alignment.hsps = [MagicMock(
+        hit_id='ref1',
+        query_id='seq1',
+        ident_num=95,
+        aln_span=100,
+        evalue=1e-50,
+        bitscore=190.0
+    )]
+    mock_parse.return_value = [mock_alignment]
 
     # Run alignment with mocked BLAST
     alignments = list(blast_handler.align_sequences(str(query_file), str(subject_file)))

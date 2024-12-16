@@ -60,7 +60,7 @@ class SelectionAnalyzer:
                 # Create 2x2 contingency table for binary trait comparison
                 binary_genotypes = (genotypes[marker] > 0).astype(int)
                 contingency = pd.crosstab(binary_genotypes,
-                                        phenotypes['trait'])
+                                        phenotypes['trait_value'])
 
                 chi2, pval = stats.chi2_contingency(contingency)[:2]
 

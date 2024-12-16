@@ -71,8 +71,11 @@ def test_complete_pipeline(sample_data):
     ld_results = linkage_analyzer.calculate_ld(genotypes)
     assert isinstance(ld_results, pd.DataFrame)
 
-    # Create sample phenotype data
-    phenotypes = pd.DataFrame({'trait_value': [1.0, 0.5]}, index=['SAMPLE1', 'SAMPLE2'])
+    # Create sample phenotype data with population information
+    phenotypes = pd.DataFrame({
+        'trait_value': [1.0, 0.5],
+        'population': ['pop1', 'pop1']
+    }, index=['SAMPLE1', 'SAMPLE2'])
     selection_stats = selection_analyzer.calculate_selection_statistics(genotypes, phenotypes)
     assert isinstance(selection_stats, dict)
 
