@@ -60,7 +60,7 @@ class BlastHandler:
                             yield {
                                 'query_id': record.query,
                                 'subject_id': alignment.hit_def,
-                                'identity': hsp.identities / hsp.align_length * 100,
+                                'identity': (hsp.identities / hsp.align_length) * 100,
                                 'alignment_length': hsp.align_length,
                                 'e_value': hsp.expect,
                                 'bit_score': hsp.bits,

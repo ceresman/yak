@@ -1,16 +1,17 @@
 """
 Tests for BLAST handler functionality.
 """
-import os
 import pytest
 import pandas as pd
-from pathlib import Path
+from unittest.mock import patch, MagicMock
 from src.gene_marker.blast_handler import BlastHandler
 
 @pytest.fixture
-def blast_handler():
+def blast_handler(tmp_path):
     """Create a BlastHandler instance for testing."""
-    return BlastHandler(output_dir="tests/data/blast_output")
+    output_dir = tmp_path / "blast_output"
+    output_dir.mkdir(exist_ok=True)
+    return BlastHandler(output_dir=str(output_dir))
 
 @pytest.fixture
 def sample_alignments():
@@ -50,7 +51,6 @@ def test_blast_handler_init(blast_handler):
 def test_calculate_similarity_scores(blast_handler, sample_alignments):
     """Test similarity score calculation."""
     df = blast_handler.calculate_similarity_scores(sample_alignments)
-
     assert isinstance(df, pd.DataFrame)
     assert 'similarity_score' in df.columns
     assert 'normalized_score' in df.columns
@@ -68,16 +68,52 @@ def test_annotate_genes(blast_handler, sample_alignments):
     assert all(key in stats for key in ['total_alignments', 'significant_alignments',
                                       'mean_similarity', 'std_similarity'])
 
-def test_align_sequences(blast_handler):
-    """Test BLAST alignment with sample data."""
-    query_file = "data/raw/markers/trait_markers.fasta"
-    subject_file = "data/raw/markers/trait_markers.fasta"
+@patch('Bio.Blast.Applications.NcbiblastnCommandline')
+@patch('Bio.Blast.NCBIXML.parse')
+def test_align_sequences(mock_parse, mock_blast, blast_handler, tmp_path):
+    """Test BLAST alignment with mocked BLAST command."""
+    # Mock BLAST command execution
+    mock_cmd = MagicMock()
+    mock_cmd.return_value = ('', '')
+    mock_blast.return_value = mock_cmd
 
-    if not os.path.exists(query_file) or not os.path.exists(subject_file):
-        pytest.skip("Sample FASTA files not available")
+    # Create test files
+    query_file = tmp_path / "query.fasta"
+    subject_file = tmp_path / "subject.fasta"
+    query_file.write_text(">seq1\nATCGATCGAT\n")
+    subject_file.write_text(">ref1\nATCGATCGAT\n")
 
-    alignments = list(blast_handler.align_sequences(query_file, subject_file))
-    assert len(alignments) > 0
-    assert all(isinstance(alignment, dict) for alignment in alignments)
-    assert all(key in alignments[0] for key in ['query_id', 'subject_id', 'identity',
-                                               'alignment_length', 'e_value'])
+    # Set up mock BLAST record
+    mock_record = MagicMock()
+    mock_record.query = "seq1"
+
+    # Set up mock alignment
+    mock_alignment = MagicMock()
+    mock_alignment.hit_def = "ref1"
+
+    # Set up mock HSP
+    mock_hsp = MagicMock()
+    mock_hsp.identities = 95
+    mock_hsp.align_length = 100
+    mock_hsp.expect = 1e-50
+    mock_hsp.bits = 190.0
+    mock_hsp.query_start = 1
+    mock_hsp.query_end = 100
+    mock_hsp.sbjct_start = 1
+    mock_hsp.sbjct_end = 100
+
+    # Set up relationships
+    mock_alignment.hsps = [mock_hsp]
+    mock_record.alignments = [mock_alignment]
+
+    # Configure mock parse to return our mock record
+    mock_parse.return_value = iter([mock_record])
+
+    # Run alignment
+    alignments = list(blast_handler.align_sequences(str(query_file), str(subject_file)))
+
+    # Verify results
+    assert len(alignments) == 1
+    assert alignments[0]['query_id'] == "seq1"
+    assert alignments[0]['subject_id'] == "ref1"
+    assert alignments[0]['identity'] == 95.0
