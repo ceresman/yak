@@ -45,6 +45,25 @@ The pipeline consists of the following modules:
 
 For detailed module descriptions and implementation requirements, see the project documentation.
 
+## Visualizations
+The following visualizations demonstrate key aspects of the yak genetic analysis pipeline:
+
+### Marker Density Distribution
+![Marker Density Heatmap](docs/images/marker_density.png)
+This heatmap visualizes the distribution of genetic markers across chromosomes, helping identify regions with high marker density that may be significant for trait analysis. Darker colors indicate higher marker density.
+
+### SNP Distribution Across Populations
+![SNP Distribution](docs/images/snp_distribution.png)
+This violin plot shows the distribution of SNP frequencies across different yak populations (Highland, Lowland, Valley, Mountain). The plot helps identify population-specific genetic variations and potential selective pressures.
+
+### Trait Distribution Analysis
+![Trait Distribution](docs/images/trait_distribution.png)
+Multi-population trait distribution analysis showing the distribution of key traits (Milk Production, Body Weight, Disease Resistance) across different yak populations. These plots help identify population-specific trait characteristics.
+
+### Genetic Diversity Indices
+![Diversity Indices](docs/images/diversity_indices.png)
+Comparison of observed and expected heterozygosity across populations, providing insights into genetic diversity and potential inbreeding effects within each population.
+
 ## Contributing
 1. Create a new branch for your feature
 2. Make your changes
