@@ -1,0 +1,6 @@
+Gene	Trait	Description	Chromosome	Position
+LALBA	MilkProduction	Alpha-lactalbumin - Key milk protein	1	1000
+CSN2	MilkProtein	Beta-casein - Major milk protein	1	2000
+TLR4	DiseaseResistance	Toll-like receptor 4 - Immune response	2	1500
+MSTN	BodySize	Myostatin - Muscle growth regulation	2	2500
+LEP	Adaptation	Leptin - Energy metabolism and adaptation	3	1000
